@@ -18,7 +18,7 @@ func (s *Secret) ToKube() (runtime.Object, error) {
 	case "":
 		return s.toKubeV1()
 	default:
-		return nil, fmt.Errorf("unsupported api version for secret: %s", cm.Version)
+		return nil, fmt.Errorf("unsupported api version for secret: %s", s.Version)
 	}
 }
 
@@ -34,11 +34,11 @@ func (s *Secret) toKubeV1() (*v1.Secret, error) {
 	kubeSecret.Annotations = s.Annotations
 	kubeSecret.Data = s.Data 
 	kubeSecret.StringData = s.StringData
-	type, err := revertSecretType(s.SecretType)
+	secretType, err := revertSecretType(s.SecretType)
 	if err != nil {
 		return nil, err
 	}
-	kubeSecret.Type = type
+	kubeSecret.Type = secretType
 
 	return kubeSecret, nil
 }
